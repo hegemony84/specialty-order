@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>스페셜티 오더</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark:  #1E3932;
+    --green-mid:   #2C5F2E;
+    --green-light: #D4E9D2;
+    --green-pale:  #F2F7F2;
+    --gold:        #CBA258;
+    --gold-light:  #F5EDD8;
+    --text:        #1E3932;
+    --text-sub:    #6B8F71;
+    --text-dim:    #A8C4AB;
+    --border:      #D8E8D8;
+    --bg:          #F7FAF7;
+    --surface:     #FFFFFF;
+    --hot-bg:      #FFF0EE;
+    --hot-color:   #C0392B;
+    --ice-bg:      #EBF5FF;
+    --ice-color:   #1A6EA8;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text);
+    min-height: 100dvh;
+    padding-bottom: 110px;
+  }
+
+  /* ── 헤더 ── */
+  header {
+    background: var(--green-dark);
+    padding: 20px 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .brand-wrap { display: flex; flex-direction: column; gap: 2px; }
+
+  .brand-en {
+    font-size: 10px;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .brand-ko {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .brand-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 300;
+    margin-top: 2px;
+  }
+
+  .header-emblem {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(203,162,88,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    background: rgba(255,255,255,0.06);
+  }
+
+  /* 카테고리 탭 */
+  .cat-tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 1px;
+    gap: 0;
+  }
+  .cat-tabs::-webkit-scrollbar { display: none; }
+
+  .cat-tab {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    border-bottom: 2.5px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .cat-tab.active { color: white; border-bottom-color: var(--gold); }
+
+  /* ── 섹션 타이틀 ── */
+  .section-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--green-dark);
+    padding: 24px 20px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title-icon { font-size: 16px; }
+
+  /* ── 메뉴 그리드 ── */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px;
+  }
+
+  /* ── 메뉴 카드 ── */
+  .menu-card {
+    background: var(--surface);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 4px rgba(30,57,50,0.06);
+    position: relative;
+  }
+
+  .menu-card.has-order {
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(44,95,46,0.1);
+  }
+
+  .menu-card:active { transform: scale(0.985); }
+
+  /* 이미지 자리 */
+  .card-img {
+    width: 100%; aspect-ratio: 1/1;
+    background: var(--green-pale);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  .card-img-inner {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+  }
+
+  .img-circle {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    border: 2px dashed var(--border);
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .img-circle-inner {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--green-light);
+  }
+
+  .img-placeholder-text {
+    font-size: 10px; color: var(--text-dim); font-weight: 300;
+  }
+
+  /* 한정 뱃지 */
+  .limited-badge {
+    position: absolute; top: 8px; left: 8px;
+    background: var(--gold); color: white;
+    font-size: 9px; font-weight: 700;
+    padding: 3px 7px; border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+
+  /* 수량 뱃지들 */
+  .order-badges {
+    position: absolute; top: 8px; right: 8px;
+    display: flex; gap: 3px; flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 80px;
+  }
+
+  .order-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 20px;
+  }
+  .order-badge.hot { background: var(--hot-bg); color: var(--hot-color); border: 1px solid var(--hot-color); }
+  .order-badge.ice { background: var(--ice-bg); color: var(--ice-color); border: 1px solid var(--ice-color); }
+  .order-badge.single { background: var(--green-light); color: var(--green-mid); border: 1px solid var(--green-mid); }
+
+  /* 카드 본문 */
+  .card-body { padding: 10px 12px 8px; }
+
+  .card-name {
+    font-size: 13px; font-weight: 700;
+    color: var(--text); line-height: 1.3;
+    margin-bottom: 2px;
+  }
+
+  .card-price {
+    font-size: 12px; font-weight: 500;
+    color: var(--gold);
+  }
+
+  /* ── 수량 조절 영역 ── */
+  .card-qty-area {
+    border-top: 1px solid var(--border);
+    background: var(--green-pale);
+    padding: 8px 10px 10px;
+  }
+
+  /* HOT/ICE 행 */
+  .temp-row {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+    gap: 4px;
+  }
+
+  .temp-row + .temp-row { border-top: 1px solid rgba(216,232,216,0.6); margin-top: 3px; padding-top: 7px; }
+
+  .temp-label {
+    display: flex; align-items: center;
+    gap: 4px; font-size: 12px; font-weight: 800;
+    min-width: 44px;
+    letter-spacing: 0.04em;
+  }
+  .temp-label.hot { color: var(--hot-color); }
+  .temp-label.ice { color: var(--ice-color); }
+
+  /* 단일 수량 (에이드, 스무디 등) */
+  .single-label {
+    font-size: 11px; font-weight: 500;
+    color: var(--text-sub);
+    min-width: 44px;
+  }
+
+  .qty-ctrl {
+    display: flex; align-items: center; gap: 0;
+  }
+
+  .qty-btn {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: white;
+    font-size: 15px; font-weight: 300;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; flex-shrink: 0;
+    transition: background 0.1s;
+    color: var(--text);
+  }
+  .qty-btn:active { background: var(--green-light); }
+
+  .qty-num {
+    width: 28px; text-align: center;
+    font-size: 14px; font-weight: 700; color: var(--text);
+  }
+  .qty-num.on-hot { color: var(--hot-color); }
+  .qty-num.on-ice { color: var(--ice-color); }
+  .qty-num.on-single { color: var(--green-mid); }
+
+  /* 토핑 행 */
+  .topping-row {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    border-top: 1px dashed var(--border);
+    margin-top: 6px; padding-top: 7px;
+    gap: 4px;
+  }
+
+  .topping-label {
+    font-size: 10px; color: var(--text-sub);
+    font-weight: 400; flex: 1;
+    min-width: 0;
+    line-height: 1.3;
+  }
+
+  .topping-price {
+    font-size: 10px; color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── 로그인 버튼 / 유저 영역 ── */
+  .header-right {
+    display: flex; flex-direction: column;
+    align-items: flex-end; gap: 6px;
+  }
+
+  .login-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 7px 13px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(203,162,88,0.6);
+    background: rgba(255,255,255,0.08);
+    color: var(--gold);
+    font-size: 12px; font-weight: 600;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .login-btn:active { background: rgba(255,255,255,0.15); }
+
+  /* 로그인 후 유저 정보 */
+  .user-info {
+    display: none;
+    flex-direction: column; align-items: flex-end; gap: 4px;
+  }
+  .user-info.show { display: flex; }
+
+  .user-name {
+    font-size: 12px; font-weight: 600; color: white;
+  }
+
+  /* 가상화폐 잔액 (관리자 토글 ON + 로그인 시만 표시) */
+  .coin-badge {
+    display: none;
+    align-items: center; gap: 4px;
+    background: var(--gold); color: var(--green-dark);
+    font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    cursor: pointer;
+  }
+  .coin-badge.show { display: flex; }
+
+  .user-logout {
+    font-size: 10px; color: rgba(255,255,255,0.4);
+    cursor: pointer; background: none; border: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    padding: 0;
+  }
+  .user-logout:hover { color: rgba(255,255,255,0.7); }
+
+  /* ── 가상화폐 결제 버튼 (주문 요약 하단) ── */
+  .coin-pay-wrap {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .coin-pay-wrap.show { display: block; }
+
+  .coin-pay-btn {
+    width: 100%; padding: 12px;
+    background: var(--gold); color: var(--green-dark);
+    border: none; border-radius: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center; gap: 6px;
+  }
+  .coin-pay-btn:disabled {
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.4); cursor: default;
+  }
+
+  /* ── 로그인 모달 ── */
+  .login-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(30,57,50,0.6);
+    z-index: 300; align-items: flex-end; justify-content: center;
+  }
+  .login-modal-overlay.show { display: flex; }
+
+  .login-modal-box {
+    background: white;
+    border-radius: 28px 28px 0 0;
+    padding: 12px 24px max(36px, env(safe-area-inset-bottom));
+    width: 100%; max-width: 480px;
+    animation: slideUp 0.24s ease;
+  }
+
+  .login-modal-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px; font-weight: 600;
+    color: var(--green-dark); margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .login-input-group { margin-bottom: 12px; }
+
+  .login-input-label {
+    font-size: 12px; font-weight: 700;
+    color: var(--green-dark); margin-bottom: 6px;
+    display: block;
+  }
+
+  .login-input {
+    width: 100%; padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px; font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text); outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+  .login-input:focus { border-color: var(--green-mid); }
+
+  .login-submit-btn {
+    width: 100%; padding: 15px;
+    background: var(--green-dark); color: white;
+    border: none; border-radius: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; margin-top: 6px;
+  }
+  .login-submit-btn:active { background: var(--green-mid); }
+
+  .login-skip {
+    text-align: center; margin-top: 14px;
+    font-size: 13px; color: var(--text-sub);
+    cursor: pointer;
+  }
+  .login-skip span { text-decoration: underline; }
+
+  .login-error {
+    font-size: 12px; color: #C0392B;
+    text-align: center; margin-top: 8px;
+    min-height: 18px;
+  }
+
+  /* ── 토핑 행 2행 레이아웃 ── */
+  .topping-row {
+    border-top: 1px dashed var(--border);
+    margin-top: 6px; padding-top: 7px;
+  }
+
+  .topping-row-top {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .topping-label {
+    font-size: 11px; color: var(--text-sub);
+    font-weight: 500;
+  }
+
+  .topping-price {
+    font-size: 11px; color: var(--gold);
+    font-weight: 600;
+  }
+
+  .topping-row-bottom {
+    display: flex; justify-content: center;
+  }
+  .divider {
+    height: 8px; background: var(--green-pale);
+    margin: 20px 0 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── 주문 정보 폼 ── */
+  .form-section { padding: 0 16px; }
+
+  .form-group { margin-bottom: 14px; }
+
+  .form-label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 700;
+    color: var(--green-dark);
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+  }
+
+  .form-label-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%; background: var(--gold);
+  }
+
+  /* 픽업/배달 선택 */
+  .pickup-select {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .pickup-btn {
+    padding: 13px 10px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: white;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; color: var(--text-sub);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    transition: all 0.15s;
+  }
+
+  .pickup-btn-icon { font-size: 20px; line-height: 1; }
+
+  .pickup-btn.active {
+    background: var(--green-pale);
+    border-color: var(--green-mid);
+    color: var(--green-dark);
+  }
+
+  .pickup-btn:active { transform: scale(0.98); }
+
+  .form-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text); background: white;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+  .form-input:focus { border-color: var(--green-mid); }
+  .form-input::placeholder { color: var(--text-dim); font-weight: 300; }
+  .form-input:disabled { background: var(--bg); color: var(--text-dim); }
+
+  /* ── 주문 요약 ── */
+  .order-summary {
+    background: var(--green-dark);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin: 8px 16px 14px;
+  }
+
+  .summary-empty {
+    text-align: center;
+    font-size: 13px; color: rgba(255,255,255,0.35);
+    font-weight: 300; padding: 4px 0;
+  }
+
+  .summary-row {
+    display: flex; justify-content: space-between;
+    align-items: center; font-size: 13px;
+    color: rgba(255,255,255,0.82);
+    padding: 3px 0;
+  }
+
+  .summary-row-name { font-weight: 400; }
+  .summary-row-price { color: var(--gold); font-weight: 500; font-size: 12px; }
+
+  .summary-div {
+    height: 1px; background: rgba(255,255,255,0.1);
+    margin: 8px 0;
+  }
+
+  .summary-total {
+    display: flex; justify-content: space-between;
+    align-items: center;
+  }
+
+  .summary-total-label { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 300; }
+  .summary-total-num   { font-size: 18px; font-weight: 700; color: white; }
+  .summary-total-cups  { font-size: 12px; color: rgba(255,255,255,0.5); margin-left: 4px; }
+
+  /* ── 주문 버튼 ── */
+  .order-btn-wrap {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px max(16px, env(safe-area-inset-bottom));
+    background: white;
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+
+  .order-btn {
+    width: 100%; padding: 16px;
+    background: var(--green-dark); color: white;
+    border: none; border-radius: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 16px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.02em;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .order-btn:active { transform: scale(0.99); background: var(--green-mid); }
+  .order-btn:disabled { background: var(--border); color: var(--text-dim); cursor: default; transform: none; }
+
+  .order-btn-badge {
+    background: var(--gold); color: var(--green-dark);
+    font-size: 11px; font-weight: 700;
+    padding: 3px 9px; border-radius: 20px; line-height: 1.4;
+  }
+
+  /* ── PC 반응형 ── */
+  @media (min-width: 600px) {
+    body { max-width: 720px; margin: 0 auto; }
+
+    .menu-grid { grid-template-columns: 1fr 1fr 1fr; gap: 14px; padding: 0 20px; }
+
+    .section-title { padding: 28px 20px 14px; font-size: 20px; }
+
+    .order-btn-wrap {
+      max-width: 720px;
+      left: 50%; transform: translateX(-50%);
+      border-radius: 0;
+    }
+
+    .order-summary { margin: 8px 20px 14px; }
+    .form-section  { padding: 0 20px; }
+  }
+
+  @media (min-width: 900px) {
+    body { max-width: 960px; }
+    .menu-grid { grid-template-columns: repeat(4, 1fr); }
+    .order-btn-wrap { max-width: 960px; }
+    .order-summary { margin: 8px 20px 14px; }
+  }
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(30,57,50,0.6);
+    z-index: 200; align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+
+  .modal-box {
+    background: white;
+    border-radius: 28px 28px 0 0;
+    padding: 12px 24px max(36px, env(safe-area-inset-bottom));
+    width: 100%;
+    animation: slideUp 0.24s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 40px; height: 4px; border-radius: 2px;
+    background: var(--border); margin: 0 auto 20px;
+  }
+
+  .modal-icon-wrap {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: var(--green-pale);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px; font-size: 34px;
+  }
+
+  .modal-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px; font-weight: 600;
+    text-align: center; margin-bottom: 6px;
+    color: var(--green-dark);
+  }
+
+  .modal-desc {
+    font-size: 14px; color: var(--text-sub);
+    text-align: center; line-height: 1.7;
+    font-weight: 300; margin-bottom: 20px;
+  }
+
+  .modal-summary {
+    background: var(--green-pale);
+    border-radius: 14px; padding: 14px 16px;
+    margin-bottom: 20px;
+  }
+
+  .modal-row {
+    display: flex; justify-content: space-between;
+    font-size: 14px; padding: 4px 0; color: var(--text);
+  }
+
+  .modal-row-price { font-weight: 700; color: var(--green-mid); }
+
+  .modal-total {
+    display: flex; justify-content: space-between;
+    border-top: 1px solid var(--border);
+    margin-top: 8px; padding-top: 10px;
+    font-size: 15px; font-weight: 700;
+    color: var(--green-dark);
+  }
+
+  .modal-total-price { color: var(--gold); }
+
+  .modal-btn {
+    width: 100%; padding: 16px;
+    background: var(--green-dark); color: white;
+    border: none; border-radius: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+  }
+  .modal-btn:active { background: var(--green-mid); }
+</style>
+</head>
+<body>
+
+<!-- 로딩 오버레이 -->
+<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(30,57,50,0.7);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:14px;">
+  <div style="width:44px;height:44px;border:4px solid rgba(255,255,255,0.2);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <span style="color:white;font-size:14px;font-weight:500;">메뉴 불러오는 중...</span>
+</div>
+<style>@keyframes spin { to { transform:rotate(360deg); } }</style>
+
+<!-- 헤더 -->
+<header>
+  <div class="header-top">
+    <div class="brand-wrap">
+      <span class="brand-en">Specialty Order</span>
+      <span class="brand-ko">스페셜티 오더</span>
+      <span class="brand-sub">함평영화학교 바리스타 실습</span>
+    </div>
+    <div class="header-right">
+      <!-- 비로그인 상태 -->
+      <button class="login-btn" id="loginBtn" onclick="openLoginModal()">
+        👤 로그인
+      </button>
+      <!-- 로그인 후 상태 -->
+      <div class="user-info" id="userInfo">
+        <span class="user-name" id="userName"></span>
+        <div class="coin-badge" id="coinBadge">🪙 <span id="coinAmount">0</span>원</div>
+        <button class="user-logout" onclick="logout()">로그아웃</button>
+      </div>
+    </div>
+  </div>
+  <div class="cat-tabs">
+    <button class="cat-tab active" onclick="scrollToSection('coffee')">커피</button>
+    <button class="cat-tab" onclick="scrollToSection('ade')">에이드</button>
+    <button class="cat-tab" onclick="scrollToSection('smoothie')">스무디</button>
+    <button class="cat-tab" onclick="scrollToSection('tea')">차</button>
+    <button class="cat-tab" onclick="scrollToSection('etc')">기타</button>
+  </div>
+</header>
+
+<!-- 메뉴 섹션들 -->
+<div class="section-title" id="coffee"><span class="section-title-icon">☕</span>커피</div>
+<div class="menu-grid" id="grid-coffee"></div>
+
+<div class="divider"></div>
+<div class="section-title" id="ade"><span class="section-title-icon">🍹</span>에이드</div>
+<div class="menu-grid" id="grid-ade"></div>
+
+<div class="divider"></div>
+<div class="section-title" id="smoothie"><span class="section-title-icon">🥤</span>스무디</div>
+<div class="menu-grid" id="grid-smoothie"></div>
+
+<div class="divider"></div>
+<div class="section-title" id="tea"><span class="section-title-icon">🍵</span>차</div>
+<div class="menu-grid" id="grid-tea"></div>
+
+<div class="divider"></div>
+<div class="section-title" id="etc"><span class="section-title-icon">🍧</span>기타</div>
+<div class="menu-grid" id="grid-etc"></div>
+
+<div class="divider" style="margin-top:20px;"></div>
+
+<!-- 주문 정보 -->
+<div class="section-title" style="padding-bottom:10px;">주문 정보</div>
+<div class="form-section">
+
+  <div class="form-group">
+    <div class="form-label"><span class="form-label-dot"></span>수령 방법</div>
+    <div class="pickup-select">
+      <button class="pickup-btn active" id="btn-pickup" onclick="setPickup('pickup')">
+        <span class="pickup-btn-icon">🏪</span>픽업
+      </button>
+      <button class="pickup-btn" id="btn-delivery" onclick="setPickup('delivery')">
+        <span class="pickup-btn-icon">🚚</span>배달
+      </button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="form-label"><span class="form-label-dot"></span>이름</div>
+    <input class="form-input" id="inputName" type="text" placeholder="예) 김철수" maxlength="10" oninput="updateBtn()">
+  </div>
+
+  <div class="form-group" id="placeGroup">
+    <div class="form-label"><span class="form-label-dot"></span>장소 <span id="placeHint" style="font-size:11px;font-weight:300;color:var(--text-sub);margin-left:4px;">(픽업은 카페 방문)</span></div>
+    <input class="form-input" id="inputPlace" type="text" placeholder="예) 3학년 2반" maxlength="20" oninput="updateBtn()" disabled>
+  </div>
+
+</div>
+
+<!-- 주문 요약 -->
+<div class="order-summary">
+  <div id="summaryEmpty" class="summary-empty">메뉴를 선택해주세요</div>
+  <div id="summaryRows" style="display:none;"></div>
+  <!-- 가상화폐 결제 (관리자 ON + 로그인 시) -->
+  <div class="coin-pay-wrap" id="coinPayWrap">
+    <button class="coin-pay-btn" id="coinPayBtn" onclick="payCoin()">
+      🪙 가상화폐로 결제
+    </button>
+  </div>
+</div>
+
+<!-- 주문 버튼 -->
+<div class="order-btn-wrap">
+  <button class="order-btn" id="orderBtn" disabled onclick="submitOrder()">주문하기</button>
+</div>
+
+<!-- 로그인 모달 -->
+<div class="login-modal-overlay" id="loginModalOverlay">
+  <div class="login-modal-box">
+    <div class="modal-handle"></div>
+    <div class="login-modal-title">로그인</div>
+    <div class="login-input-group">
+      <label class="login-input-label">아이디</label>
+      <input class="login-input" id="loginId" type="text" placeholder="아이디 입력" autocomplete="username">
+    </div>
+    <div class="login-input-group">
+      <label class="login-input-label">비밀번호</label>
+      <input class="login-input" id="loginPw" type="password" placeholder="비밀번호 입력" autocomplete="current-password">
+    </div>
+    <div class="login-error" id="loginError"></div>
+    <button class="login-submit-btn" onclick="doLogin()">로그인</button>
+    <div class="login-skip" onclick="closeLoginModal()">
+      로그인 없이 <span>주문만 하기</span>
+    </div>
+  </div>
+</div>
+
+<!-- 완료 모달 -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-icon-wrap">☕</div>
+    <div class="modal-title">주문 완료!</div>
+    <div class="modal-desc" id="modalDesc"></div>
+    <div class="modal-summary" id="modalSummary"></div>
+    <button class="modal-btn" onclick="closeModal()">확인</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp }                        from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, doc,
+           getDocs, addDoc, onSnapshot,
+           updateDoc, serverTimestamp,
+           query, orderBy }                       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  import { getAuth, signInWithEmailAndPassword,
+           signOut, onAuthStateChanged }          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+  const firebaseConfig = {
+    apiKey:            'AIzaSyBSv0AWNRGxhyq97MvI3Kc2S-cM8kXNdj4',
+    authDomain:        'tfp-with-ai.firebaseapp.com',
+    projectId:         'tfp-with-ai',
+    storageBucket:     'tfp-with-ai.firebasestorage.app',
+    messagingSenderId: '667927194187',
+    appId:             '1:667927194187:web:e93bcb20fa80c438e2bbce',
+  };
+
+  const firebaseApp = initializeApp(firebaseConfig);
+  const db          = getFirestore(firebaseApp);
+  const auth        = getAuth(firebaseApp);
+
+  // ── 상태 ──
+  let menuData    = [];
+  let adminSettings = { coinEnabled: false };
+  let currentUser = null;
+  let pickupType  = 'pickup';
+  const qty       = {};
+
+  // ── 로딩 표시 ──
+  function showLoading(show) {
+    document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+  }
+
+  // ── Firestore: 메뉴 불러오기 + 실시간 설정 감시 ──
+  async function loadMenus() {
+    showLoading(true);
+    try {
+      const q    = query(collection(db, 'menus'), orderBy('order'));
+      const snap = await getDocs(q);
+      menuData   = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      menuData.forEach(m => {
+        qty[m.id] = m.type === 'hot-ice'
+          ? { hot:0, ice:0, topping:0 }
+          : { single:0, topping:0 };
+      });
+
+      renderMenus();
+    } catch(e) {
+      console.error('메뉴 로드 실패:', e);
+    }
+    showLoading(false);
+  }
+
+  // 관리자 설정 실시간 감시 (coinEnabled, 메뉴 visible)
+  function watchSettings() {
+    onSnapshot(doc(db, 'settings', 'admin'), snap => {
+      if (!snap.exists()) return;
+      adminSettings = snap.data();
+      applyLoginState();
+    });
+  }
+
+  // 메뉴 visible 실시간 감시
+  function watchMenus() {
+    onSnapshot(collection(db, 'menus'), snap => {
+      snap.docChanges().forEach(change => {
+        const m = { id: change.doc.id, ...change.doc.data() };
+        const idx = menuData.findIndex(x => x.id === m.id);
+        if (idx !== -1) menuData[idx] = m;
+        // 보이기/숨기기 반영
+        const card = document.getElementById('card-' + m.id);
+        if (card) card.style.display = m.visible ? '' : 'none';
+        if (!m.visible && qty[m.id]) {
+          qty[m.id] = m.type === 'hot-ice'
+            ? { hot:0, ice:0, topping:0 } : { single:0, topping:0 };
+          updateBadges(m.id);
+          ['hot','ice','single','topping'].forEach(k => {
+            const el = document.getElementById('q-' + m.id + '-' + k);
+            if (el) { el.textContent = 0; el.className = 'qty-num'; }
+          });
+          updateSummary(); updateBtn();
+        }
+      });
+    });
+  }
+
+  // ── 메뉴 카드 렌더링 ──
+  function renderMenus() {
+    // 그리드 초기화
+    ['coffee','ade','smoothie','tea','etc'].forEach(cat => {
+      const g = document.getElementById('grid-' + cat);
+      if (g) g.innerHTML = '';
+    });
+
+    menuData.forEach(m => {
+      const grid = document.getElementById('grid-' + m.category);
+      if (!grid) return;
+      const card = document.createElement('div');
+      card.className = 'menu-card';
+      card.id = 'card-' + m.id;
+      if (!m.visible) card.style.display = 'none';
+
+      const limitedBadge = m.limited ? `<div class="limited-badge">${m.limited}</div>` : '';
+
+      // 이미지 영역 (imgUrl 있으면 사진, 없으면 플레이스홀더)
+      const imgArea = m.imgUrl
+        ? `<div class="card-img"><img src="${m.imgUrl}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;"></div>`
+        : `<div class="card-img"><div class="card-img-inner">
+            <div class="img-circle"><div class="img-circle-inner"></div></div>
+            <span class="img-placeholder-text">사진 준비 중</span>
+           </div></div>`;
+
+      let qtyAreaHTML = '';
+      if (m.type === 'hot-ice') {
+        qtyAreaHTML = `
+          <div class="card-qty-area" onclick="event.stopPropagation()">
+            <div class="temp-row">
+              <div class="temp-label hot">HOT</div>
+              <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('${m.id}','hot',-1)">−</button>
+                <span class="qty-num" id="q-${m.id}-hot">0</span>
+                <button class="qty-btn" onclick="changeQty('${m.id}','hot',1)">+</button>
+              </div>
+            </div>
+            <div class="temp-row">
+              <div class="temp-label ice">ICE</div>
+              <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('${m.id}','ice',-1)">−</button>
+                <span class="qty-num" id="q-${m.id}-ice">0</span>
+                <button class="qty-btn" onclick="changeQty('${m.id}','ice',1)">+</button>
+              </div>
+            </div>
+          </div>`;
+      } else {
+        const toppingRow = m.topping ? `
+          <div class="topping-row" onclick="event.stopPropagation()">
+            <div class="topping-row-top">
+              <span class="topping-label">+ ${m.topping.name}</span>
+              <span class="topping-price">${m.topping.price.toLocaleString()}원</span>
+            </div>
+            <div class="topping-row-bottom">
+              <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('${m.id}','topping',-1)">−</button>
+                <span class="qty-num" id="q-${m.id}-topping">0</span>
+                <button class="qty-btn" onclick="changeQty('${m.id}','topping',1)">+</button>
+              </div>
+            </div>
+          </div>`
+          : `<div class="topping-row" style="border-top:none;visibility:hidden;">
+              <div class="topping-row-top"><span class="topping-label">-</span></div>
+              <div class="topping-row-bottom" style="height:26px;"></div>
+            </div>`;
+        qtyAreaHTML = `
+          <div class="card-qty-area" onclick="event.stopPropagation()">
+            <div class="temp-row">
+              <div class="single-label">수량</div>
+              <div class="qty-ctrl">
+                <button class="qty-btn" onclick="changeQty('${m.id}','single',-1)">−</button>
+                <span class="qty-num" id="q-${m.id}-single">0</span>
+                <button class="qty-btn" onclick="changeQty('${m.id}','single',1)">+</button>
+              </div>
+            </div>
+            ${toppingRow}
+          </div>`;
+      }
+
+      card.innerHTML = `
+        ${limitedBadge}
+        <div class="order-badges" id="badges-${m.id}"></div>
+        ${imgArea}
+        <div class="card-body">
+          <div class="card-name">${m.name}</div>
+          <div class="card-price">${m.price.toLocaleString()}원</div>
+        </div>
+        ${qtyAreaHTML}`;
+
+      grid.appendChild(card);
+    });
+  }
+
+  // ── 수량 변경 ──
+  function changeQty(id, key, delta) {
+    const q = qty[id];
+    const m = menuData.find(x => x.id === id);
+    if (!q || !m) return;
+
+    if (key === 'topping') {
+      const base = m.type === 'hot-ice' ? (q.hot + q.ice) : q.single;
+      q.topping = Math.max(0, Math.min(base, q.topping + delta));
+    } else {
+      q[key] = Math.max(0, Math.min(9, (q[key] || 0) + delta));
+      if (m.topping) {
+        const base = m.type === 'hot-ice' ? (q.hot + q.ice) : q.single;
+        q.topping = Math.min(q.topping, base);
+        const tEl = document.getElementById('q-' + id + '-topping');
+        if (tEl) tEl.textContent = q.topping;
+      }
+    }
+
+    const el = document.getElementById('q-' + id + '-' + key);
+    if (el) {
+      el.textContent = q[key] || 0;
+      const val = q[key] || 0;
+      el.className = 'qty-num' + (val > 0
+        ? (key==='hot' ? ' on-hot' : key==='ice' ? ' on-ice' : ' on-single') : '');
+    }
+    updateBadges(id); updateSummary(); updateBtn();
+  }
+
+  // 전역으로 노출 (onclick에서 호출)
+  window.changeQty = changeQty;
+
+  function updateBadges(id) {
+    const q = qty[id];
+    const m = menuData.find(x => x.id === id);
+    if (!q || !m) return;
+    const card   = document.getElementById('card-' + id);
+    const badges = document.getElementById('badges-' + id);
+    let html = ''; let hasAny = false;
+    if (m.type === 'hot-ice') {
+      if (q.hot  > 0) { html += `<span class="order-badge hot">HOT ${q.hot}</span>`;  hasAny = true; }
+      if (q.ice  > 0) { html += `<span class="order-badge ice">ICE ${q.ice}</span>`;  hasAny = true; }
+    } else {
+      if (q.single > 0) { html += `<span class="order-badge single">${q.single}</span>`; hasAny = true; }
+    }
+    if (badges) badges.innerHTML = html;
+    if (card)   card.classList.toggle('has-order', hasAny);
+  }
+
+  function getOrderRows() {
+    const rows = [];
+    menuData.forEach(m => {
+      const q = qty[m.id];
+      if (!q) return;
+      if (m.type === 'hot-ice') {
+        if (q.hot > 0) rows.push({ name: m.name+' (HOT)', qty: q.hot,  price: m.price * q.hot });
+        if (q.ice > 0) rows.push({ name: m.name+' (ICE)', qty: q.ice,  price: m.price * q.ice });
+      } else {
+        if (q.single > 0) {
+          rows.push({ name: m.name, qty: q.single, price: m.price * q.single });
+          if (m.topping && q.topping > 0)
+            rows.push({ name:'+ '+m.topping.name, qty: q.topping, price: m.topping.price * q.topping });
+        }
+      }
+    });
+    return rows;
+  }
+
+  function updateSummary() {
+    const rows  = getOrderRows();
+    const empty = document.getElementById('summaryEmpty');
+    const wrap  = document.getElementById('summaryRows');
+    if (rows.length === 0) {
+      empty.style.display = ''; wrap.style.display = 'none'; return;
+    }
+    empty.style.display = 'none'; wrap.style.display = '';
+    const totalCups  = menuData.reduce((s,m) => { const q=qty[m.id]; return s+(m.type==='hot-ice'?q.hot+q.ice:q.single); }, 0);
+    const totalPrice = rows.reduce((s,r) => s+r.price, 0);
+    wrap.innerHTML = rows.map(r =>
+      `<div class="summary-row">
+        <span class="summary-row-name">${r.name} × ${r.qty}</span>
+        <span class="summary-row-price">${r.price.toLocaleString()}원</span>
+      </div>`
+    ).join('') +
+    `<div class="summary-div"></div>
+     <div class="summary-total">
+       <span class="summary-total-label">합계</span>
+       <span>
+         <span class="summary-total-num">${totalPrice.toLocaleString()}원</span>
+         <span class="summary-total-cups">${totalCups}잔</span>
+       </span>
+     </div>`;
+    updateCoinPayBtn();
+  }
+
+  function updateBtn() {
+    const rows     = getOrderRows();
+    const name     = document.getElementById('inputName').value.trim();
+    const place    = document.getElementById('inputPlace').value.trim();
+    const btn      = document.getElementById('orderBtn');
+    const needPlace = pickupType === 'delivery';
+    const ok = rows.length > 0 && name && (!needPlace || place);
+    btn.disabled = !ok;
+    if (ok) {
+      const totalCups  = menuData.reduce((s,m) => { const q=qty[m.id]; return s+(m.type==='hot-ice'?q.hot+q.ice:q.single); }, 0);
+      const totalPrice = rows.reduce((s,r) => s+r.price, 0);
+      btn.innerHTML = `주문하기 <span class="order-btn-badge">${totalCups}잔 · ${totalPrice.toLocaleString()}원</span>`;
+    } else {
+      btn.innerHTML = '주문하기';
+    }
+  }
+
+  // 전역 노출
+  window.updateBtn = updateBtn;
+
+  function setPickup(type) {
+    pickupType = type;
+    document.getElementById('btn-pickup').classList.toggle('active', type==='pickup');
+    document.getElementById('btn-delivery').classList.toggle('active', type==='delivery');
+    const placeInput = document.getElementById('inputPlace');
+    const placeHint  = document.getElementById('placeHint');
+    if (type === 'delivery') {
+      placeInput.disabled = false;
+      placeInput.placeholder = '예) 3학년 2반';
+      placeHint.textContent = '(배달 장소 입력)';
+    } else {
+      placeInput.disabled = true;
+      placeInput.value = '';
+      placeHint.textContent = '(픽업은 카페 방문)';
+    }
+    updateBtn();
+  }
+  window.setPickup = setPickup;
+
+  // ── 주문 제출 (Firestore에 저장) ──
+  async function submitOrder(isCoinPay = false) {
+    const name  = document.getElementById('inputName').value.trim();
+    const place = document.getElementById('inputPlace').value.trim();
+    const rows  = getOrderRows();
+    const totalPrice = rows.reduce((s,r) => s+r.price, 0);
+
+    try {
+      // Firestore orders 컬렉션에 저장
+      await addDoc(collection(db, 'orders'), {
+        name,
+        place:    pickupType === 'delivery' ? place : '카페 픽업',
+        delivery: pickupType,
+        items:    rows.map(r => ({ name: r.name, qty: r.qty, price: r.price })),
+        total:    totalPrice,
+        status:   'wait',
+        payMethod: isCoinPay ? 'coin' : 'cash',
+        uid:      currentUser ? currentUser.uid : null,
+        createdAt: serverTimestamp(),
+      });
+
+      // 가상화폐 결제 시 잔액 차감
+      if (isCoinPay && currentUser) {
+        const newCoin = currentUser.coin - totalPrice;
+        await updateDoc(doc(db, 'users', currentUser.uid), { coin: newCoin });
+        currentUser.coin = newCoin;
+        document.getElementById('coinAmount').textContent = newCoin.toLocaleString();
+      }
+
+      // 완료 모달 표시
+      const delivery = pickupType==='delivery' ? `${place} 배달` : '카페 픽업';
+      const payMethod = isCoinPay ? ' · 🪙 가상화폐 결제' : '';
+      document.getElementById('modalDesc').innerHTML =
+        `<b>${name}</b>님의 주문이 접수됐어요.<br>${delivery}${payMethod} 😊`;
+      document.getElementById('modalSummary').innerHTML =
+        rows.map(r => `<div class="modal-row"><span>${r.name} × ${r.qty}</span><span class="modal-row-price">${r.price.toLocaleString()}원</span></div>`).join('') +
+        `<div class="modal-total"><span>합계</span><span class="modal-total-price">${totalPrice.toLocaleString()}원</span></div>`;
+      document.getElementById('modalOverlay').classList.add('show');
+
+    } catch(e) {
+      console.error('주문 실패:', e);
+      alert('주문 중 오류가 발생했어요. 다시 시도해주세요.');
+    }
+  }
+  window.submitOrder = submitOrder;
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+    menuData.forEach(m => {
+      qty[m.id] = m.type==='hot-ice' ? {hot:0,ice:0,topping:0} : {single:0,topping:0};
+      updateBadges(m.id);
+      ['hot','ice','single','topping'].forEach(k => {
+        const el = document.getElementById('q-'+m.id+'-'+k);
+        if (el) { el.textContent=0; el.className='qty-num'; }
+      });
+    });
+    document.getElementById('inputName').value  = '';
+    document.getElementById('inputPlace').value = '';
+    updateSummary(); updateBtn();
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+  window.closeModal = closeModal;
+
+  // ── 로그인 ──
+  function openLoginModal() {
+    document.getElementById('loginModalOverlay').classList.add('show');
+    document.getElementById('loginId').value  = '';
+    document.getElementById('loginPw').value  = '';
+    document.getElementById('loginError').textContent = '';
+    setTimeout(() => document.getElementById('loginId').focus(), 300);
+  }
+  window.openLoginModal = openLoginModal;
+
+  function closeLoginModal() {
+    document.getElementById('loginModalOverlay').classList.remove('show');
+  }
+  window.closeLoginModal = closeLoginModal;
+
+  async function doLogin() {
+    const email = document.getElementById('loginId').value.trim();
+    const pw    = document.getElementById('loginPw').value;
+    document.getElementById('loginError').textContent = '';
+    try {
+      await signInWithEmailAndPassword(auth, email, pw);
+      closeLoginModal();
+    } catch(e) {
+      document.getElementById('loginError').textContent = '이메일 또는 비밀번호가 올바르지 않아요.';
+    }
+  }
+  window.doLogin = doLogin;
+
+  async function logout() {
+    await signOut(auth);
+  }
+  window.logout = logout;
+
+  // Auth 상태 변경 감지
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      // Firestore에서 사용자 정보 불러오기
+      try {
+        const { getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        if (snap.exists()) {
+          currentUser = { uid: user.uid, ...snap.data() };
+        } else {
+          currentUser = { uid: user.uid, name: user.email, coin: 0 };
+        }
+      } catch(e) {
+        currentUser = { uid: user.uid, name: user.email, coin: 0 };
+      }
+    } else {
+      currentUser = null;
+    }
+    applyLoginState();
+  });
+
+  function applyLoginState() {
+    const loginBtn  = document.getElementById('loginBtn');
+    const userInfo  = document.getElementById('userInfo');
+    const userName  = document.getElementById('userName');
+    const coinBadge = document.getElementById('coinBadge');
+    const coinAmt   = document.getElementById('coinAmount');
+    const coinWrap  = document.getElementById('coinPayWrap');
+
+    if (currentUser) {
+      loginBtn.style.display = 'none';
+      userInfo.classList.add('show');
+      userName.textContent = currentUser.name;
+      if (adminSettings.coinEnabled) {
+        coinBadge.classList.add('show');
+        coinAmt.textContent = (currentUser.coin || 0).toLocaleString();
+        coinWrap.classList.add('show');
+        updateCoinPayBtn();
+      } else {
+        coinBadge.classList.remove('show');
+        coinWrap.classList.remove('show');
+      }
+    } else {
+      loginBtn.style.display = '';
+      userInfo.classList.remove('show');
+      coinBadge.classList.remove('show');
+      coinWrap.classList.remove('show');
+    }
+
+    const nameInput = document.getElementById('inputName');
+    if (currentUser && nameInput) {
+      nameInput.value    = currentUser.name;
+      nameInput.disabled = true;
+    } else if (nameInput) {
+      nameInput.value    = '';
+      nameInput.disabled = false;
+    }
+    updateBtn();
+  }
+
+  function updateCoinPayBtn() {
+    if (!currentUser || !adminSettings.coinEnabled) return;
+    const rows  = getOrderRows();
+    const total = rows.reduce((s,r) => s+r.price, 0);
+    const btn   = document.getElementById('coinPayBtn');
+    const enough = currentUser.coin >= total && total > 0;
+    btn.disabled = !enough;
+    btn.textContent = enough
+      ? `🪙 가상화폐로 결제 (잔액 ${currentUser.coin.toLocaleString()}원)`
+      : `🪙 잔액 부족 (${(currentUser.coin||0).toLocaleString()}원)`;
+  }
+
+  async function payCoin() {
+    const rows  = getOrderRows();
+    const total = rows.reduce((s,r) => s+r.price, 0);
+    if (!currentUser || currentUser.coin < total) return;
+    await submitOrder(true);
+  }
+  window.payCoin = payCoin;
+
+  // ── 탭 & 스크롤 ──
+  function setActiveTab(id) {
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    const map = { coffee:0, ade:1, smoothie:2, tea:3, etc:4 };
+    const idx = map[id];
+    if (idx !== undefined) document.querySelectorAll('.cat-tab')[idx]?.classList.add('active');
+  }
+
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const headerH = document.querySelector('header').offsetHeight;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerH - 8;
+    window.scrollTo({ top, behavior:'smooth' });
+    setActiveTab(id);
+  }
+  window.scrollToSection = scrollToSection;
+
+  const sectionIds = ['coffee','ade','smoothie','tea','etc'];
+  let scrollTimer = null;
+  window.addEventListener('scroll', () => {
+    if (scrollTimer) return;
+    scrollTimer = setTimeout(() => {
+      scrollTimer = null;
+      const headerH = document.querySelector('header').offsetHeight + 16;
+      let current = sectionIds[0];
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= headerH) current = id;
+      }
+      setActiveTab(current);
+    }, 80);
+  }, { passive:true });
+
+  // 엔터키 로그인
+  document.addEventListener('keydown', e => {
+    if (e.key==='Enter' && document.getElementById('loginModalOverlay').classList.contains('show')) doLogin();
+  });
+
+  // ── 초기화 ──
+  await loadMenus();
+  watchSettings();
+  watchMenus();
+
+  // (더미 데이터 제거됨 — Firestore에서 불러옴)
+</script>
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>스페셜티 오더 — 관리자</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark:  #1E3932;
+    --green-mid:   #2C5F2E;
+    --green-light: #D4E9D2;
+    --green-pale:  #F2F7F2;
+    --gold:        #CBA258;
+    --gold-light:  #F5EDD8;
+    --border:      #D4E4D4;
+    --bg:          #F2F7F2;
+    --surface:     #FFFFFF;
+    --text:        #1E3932;
+    --text-sub:    #6B8F71;
+    --text-dim:    #A8C4AB;
+    --wait-bg:     #FDFAF3;
+    --wait-color:  #CBA258;
+    --wait-dark:   #8C6A2E;
+    --wait-pill:   #F5EDD8;
+    --wait-btn:    #CBA258;
+    --make-bg:     #F0F5FF;
+    --make-color:  #3A7BD5;
+    --make-dark:   #1A5CB5;
+    --make-pill:   #DEEAFF;
+    --make-btn:    #3A7BD5;
+    --done-bg:     #EEF5EE;
+    --done-color:  #1E3932;
+    --done-dark:   #1E3932;
+    --done-pill:   #D4E9D2;
+    --done-btn:    #C8DEC8;
+    --done-btnT:   #1E3932;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text);
+    height: 100dvh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── 헤더 ── */
+  header {
+    background: var(--green-dark);
+    height: 54px;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 16px; flex-shrink: 0;
+  }
+
+  .header-brand {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px; font-weight: 600; color: white;
+  }
+  .header-brand em { font-style: normal; color: var(--gold); }
+
+  .header-right { display: flex; align-items: center; gap: 8px; }
+
+  .live-badge {
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.1); color: #A8D4AB;
+    font-size: 11px; font-weight: 500;
+    padding: 4px 9px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #6AB88A;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:0.4; transform:scale(0.7); }
+  }
+
+  .header-clock { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 300; }
+
+  .mgmt-open-btn {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px; color: white;
+    font-size: 16px; width: 34px; height: 34px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .mgmt-open-btn:active { background: rgba(255,255,255,0.22); }
+
+  /* ── 탭 바 ── */
+  .tab-bar {
+    height: 56px; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-shrink: 0;
+  }
+
+  .tab {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2px;
+    cursor: pointer; border: none; background: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s; padding: 0;
+  }
+
+  .tab-icon  { font-size: 17px; line-height: 1; }
+  .tab-label { font-size: 11px; font-weight: 500; color: var(--text-sub); }
+  .tab-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 1px 6px; border-radius: 20px;
+    min-width: 18px; text-align: center;
+    background: var(--border); color: var(--text-sub);
+  }
+
+  .tab.tw { border-bottom-color: var(--wait-color); }
+  .tab.tw .tab-label { color: var(--wait-dark); }
+  .tab.tw .tab-badge { background: var(--wait-pill); color: var(--wait-dark); }
+
+  .tab.tm { border-bottom-color: var(--make-color); }
+  .tab.tm .tab-label { color: var(--make-dark); }
+  .tab.tm .tab-badge { background: var(--make-pill); color: var(--make-dark); }
+
+  .tab.td { border-bottom-color: var(--done-color); }
+  .tab.td .tab-label { color: var(--done-dark); }
+  .tab.td .tab-badge { background: var(--done-pill); color: var(--done-dark); }
+
+  /* ── 음료 합산 바 ── */
+  .summary-bar {
+    background: var(--wait-pill);
+    border-bottom: 1px solid rgba(203,162,88,0.25);
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease; flex-shrink: 0;
+  }
+  .summary-bar.show { max-height: 120px; }
+
+  .summary-bar-inner { padding: 10px 16px 12px; }
+  .summary-bar-head {
+    display: flex; justify-content: space-between;
+    font-size: 11px; font-weight: 700;
+    color: var(--wait-dark); margin-bottom: 8px;
+  }
+  .summary-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .summary-chip {
+    display: flex; align-items: center; gap: 4px;
+    background: white; border-radius: 20px;
+    padding: 5px 11px;
+    border: 1px solid rgba(203,162,88,0.25);
+    font-size: 12px;
+  }
+  .chip-name { font-weight: 500; color: var(--wait-dark); }
+  .chip-qty  { font-weight: 700; color: var(--wait-dark); }
+
+  /* ── 패널 ── */
+  .panels { flex: 1; overflow: hidden; }
+
+  .panel {
+    display: none; height: 100%;
+    overflow-y: auto; padding: 12px 12px 24px;
+    flex-direction: column; gap: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .panel::-webkit-scrollbar { display: none; }
+  .panel.active { display: flex; }
+
+  .panel-wait { background: var(--wait-bg); }
+  .panel-make { background: var(--make-bg); }
+  .panel-done { background: var(--done-bg); }
+
+  .done-bar {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 2px 8px; flex-shrink: 0;
+  }
+  .done-bar-label { font-size: 12px; color: var(--text-sub); font-weight: 300; }
+  .btn-clear-all {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px; font-weight: 600;
+    padding: 7px 14px; border-radius: 10px;
+    border: 1.5px solid #C8D4BE;
+    background: #EEF5EA; color: #5A7A4A; cursor: pointer;
+  }
+
+  /* ── 주문 카드 ── */
+  .order-card {
+    background: var(--surface);
+    border-radius: 18px; padding: 16px 15px 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    position: relative; flex-shrink: 0;
+    animation: fadeUp 0.18s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(5px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .order-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    border-radius: 18px 18px 0 0; pointer-events: none;
+  }
+  .panel-wait .order-card::before { background: var(--wait-color); }
+  .panel-make .order-card::before { background: var(--make-color); }
+  .panel-done .order-card::before { background: var(--done-color); }
+  .panel-done .order-card { opacity: 0.72; }
+
+  .card-head { margin-bottom: 10px; }
+  .card-name { font-size: 19px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .card-sub  {
+    font-size: 12px; color: var(--text-sub);
+    font-weight: 300; margin-top: 3px;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+
+  .dbadge {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 10px;
+  }
+  .dbadge.pickup   { background: var(--green-light); color: var(--green-mid); }
+  .dbadge.delivery { background: #DEEAFF; color: #1A5CB5; }
+
+  .btn-del {
+    position: absolute; top: 12px; right: 12px;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1.5px solid #E0D0CC; background: #FBF0EE;
+    color: #C08070; font-size: 12px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-del:active { background: #F5DDD8; transform: scale(0.9); }
+
+  /* 메뉴 태그 */
+  .card-items { margin-bottom: 12px; cursor: pointer; user-select: none; }
+  .items-preview, .items-all { display: flex; flex-wrap: wrap; gap: 5px; }
+  .items-all { display: none; animation: fadeUp 0.15s ease; }
+  .card-items.expanded .items-preview { display: none; }
+  .card-items.expanded .items-all     { display: flex; }
+
+  .card-item {
+    display: inline-flex; align-items: center; gap: 4px;
+    border-radius: 20px; padding: 5px 10px 5px 8px; font-size: 12px;
+  }
+  .panel-wait .card-item { background: var(--wait-pill); }
+  .panel-make .card-item { background: var(--make-pill); }
+  .panel-done .card-item { background: var(--done-pill); }
+
+  .item-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .panel-wait .item-dot { background: var(--wait-color); }
+  .panel-make .item-dot { background: var(--make-color); }
+  .panel-done .item-dot { background: var(--done-color); }
+
+  .item-name { font-weight: 400; color: var(--text); }
+  .item-qty  { font-weight: 700; }
+  .panel-wait .item-qty { color: var(--wait-dark); }
+  .panel-make .item-qty { color: var(--make-dark); }
+  .panel-done .item-qty { color: var(--done-dark); }
+
+  .card-more {
+    display: none; justify-content: center;
+    padding: 5px 0 0; font-size: 11px; font-weight: 600;
+    border-top: 1px dashed var(--border); margin-top: 8px; cursor: pointer;
+  }
+  .card-more.visible { display: flex; }
+  .panel-wait .card-more { color: var(--wait-dark); }
+  .panel-make .card-more { color: var(--make-dark); }
+  .panel-done .card-more { color: var(--done-dark); }
+
+  /* 액션 */
+  .card-actions { display: flex; gap: 8px; align-items: center; }
+  .btn-main {
+    flex: 1; padding: 15px; border: none; border-radius: 13px;
+    font-size: 15px; font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: filter 0.15s, transform 0.1s;
+  }
+  .btn-main:active { transform: scale(0.97); filter: brightness(0.92); }
+  .btn-start      { background: var(--wait-btn); color: white; }
+  .btn-complete   { background: var(--make-btn); color: white; }
+  .btn-done-label { background: var(--done-btn); color: var(--done-btnT); cursor: default; font-weight: 500; }
+
+  .btn-back {
+    flex-shrink: 0; width: 50px; height: 50px;
+    border: 1.5px solid var(--border); border-radius: 13px;
+    background: var(--bg); color: var(--text-sub); font-size: 17px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .btn-back:active { background: var(--border); transform: scale(0.95); }
+
+  /* 빈 상태 */
+  .empty-state {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: var(--text-dim); padding: 40px 20px;
+  }
+  .empty-icon { font-size: 38px; margin-bottom: 10px; opacity: 0.4; }
+  .empty-text { font-size: 14px; font-weight: 300; }
+
+  /* ── 확인 모달 ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(30,57,50,0.5);
+    z-index: 200; align-items: flex-end; justify-content: center;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--surface); border-radius: 24px 24px 0 0;
+    padding: 12px 24px 32px; width: 100%; text-align: center;
+    animation: slideUp 0.22s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); } to { transform: translateY(0); }
+  }
+  .modal-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border); margin: 0 auto 20px; }
+  .modal-icon  { font-size: 36px; margin-bottom: 10px; }
+  .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 7px; }
+  .modal-desc  { font-size: 14px; color: var(--text-sub); font-weight: 300; line-height: 1.6; margin-bottom: 22px; }
+  .modal-btns  { display: flex; gap: 10px; }
+  .modal-btn   { flex: 1; padding: 15px; border: none; border-radius: 13px; font-size: 15px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+  .modal-btn:active { filter: brightness(0.93); }
+  .modal-cancel  { background: var(--bg); color: var(--text-sub); }
+  .modal-confirm { background: #D4756A; color: white; }
+
+  /* ── 메뉴 관리 패널 ── */
+  .mgmt-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(30,57,50,0.5);
+    z-index: 300; align-items: flex-end; justify-content: center;
+  }
+  .mgmt-overlay.show { display: flex; }
+  .mgmt-sheet {
+    background: var(--surface); border-radius: 24px 24px 0 0;
+    width: 100%; max-height: 82dvh;
+    display: flex; flex-direction: column;
+    animation: slideUp 0.24s ease;
+  }
+  .mgmt-handle-wrap { padding: 12px 0 0; display: flex; justify-content: center; flex-shrink: 0; }
+  .mgmt-handle { width: 40px; height: 4px; border-radius: 2px; background: var(--border); }
+  .mgmt-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .mgmt-head-title { font-size: 16px; font-weight: 700; color: var(--text); }
+  .mgmt-head-close { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-sub); padding: 4px 8px; }
+  .mgmt-scroll { flex: 1; overflow-y: auto; padding: 8px 0 max(24px, env(safe-area-inset-bottom)); -webkit-overflow-scrolling: touch; }
+  .mgmt-scroll::-webkit-scrollbar { display: none; }
+
+  .mgmt-coin-box {
+    margin: 12px 16px; padding: 14px 16px;
+    background: var(--gold-light); border-radius: 14px;
+    border: 1px solid rgba(203,162,88,0.3);
+  }
+  .mgmt-coin-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .mgmt-coin-label { font-size: 14px; font-weight: 700; color: #8C6A2E; }
+  .mgmt-coin-desc  { font-size: 11px; color: #A8844A; margin-top: 4px; font-weight: 300; }
+
+  .mgmt-cat { padding: 12px 20px 4px; font-size: 11px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.06em; }
+  .mgmt-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; border-bottom: 1px solid var(--border); gap: 12px;
+  }
+  .mgmt-name { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; }
+  .mgmt-name.off { color: var(--text-dim); text-decoration: line-through; }
+
+  .tog { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+  .tog input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .tog-track { position: absolute; inset: 0; background: var(--border); border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+  .tog-track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  .tog input:checked + .tog-track { background: var(--make-color); }
+  .tog input:checked + .tog-track::after { transform: translateX(20px); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand"><em>☕</em> 스페셜티 오더</div>
+  <div class="header-right">
+    <div class="live-badge"><span class="live-dot"></span>실시간</div>
+    <button class="mgmt-open-btn" onclick="openMgmt()">⚙️</button>
+    <span class="header-clock" id="clockEl"></span>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab tw" id="tab-wait" onclick="setTab('wait')">
+    <span class="tab-icon">⏳</span>
+    <span class="tab-label">대기중</span>
+    <span class="tab-badge" id="badge-wait">0</span>
+  </button>
+  <button class="tab" id="tab-make" onclick="setTab('make')">
+    <span class="tab-icon">☕</span>
+    <span class="tab-label">제조중</span>
+    <span class="tab-badge" id="badge-make">0</span>
+  </button>
+  <button class="tab" id="tab-done" onclick="setTab('done')">
+    <span class="tab-icon">✅</span>
+    <span class="tab-label">완료</span>
+    <span class="tab-badge" id="badge-done">0</span>
+  </button>
+</div>
+
+<div class="summary-bar show" id="summaryBar">
+  <div class="summary-bar-inner">
+    <div class="summary-bar-head">
+      <span>대기 음료 현황</span>
+      <span id="summaryTotal">합계 0잔</span>
+    </div>
+    <div class="summary-chips" id="summaryChips"></div>
+  </div>
+</div>
+
+<div class="panels">
+  <div class="panel panel-wait active" id="panel-wait"></div>
+  <div class="panel panel-make"        id="panel-make"></div>
+  <div class="panel panel-done"        id="panel-done"></div>
+</div>
+
+<!-- 메뉴 관리 패널 -->
+<div class="mgmt-overlay" id="mgmtOverlay" onclick="bgClose(event)">
+  <div class="mgmt-sheet">
+    <div class="mgmt-handle-wrap"><div class="mgmt-handle"></div></div>
+    <div class="mgmt-head">
+      <span class="mgmt-head-title">⚙️ 메뉴 관리</span>
+      <button class="mgmt-head-close" onclick="closeMgmt()">✕</button>
+    </div>
+    <div class="mgmt-scroll">
+      <div class="mgmt-coin-box">
+        <div class="mgmt-coin-row">
+          <div>
+            <div class="mgmt-coin-label">🪙 가상화폐 결제</div>
+            <div class="mgmt-coin-desc">켜면 주문 화면에 잔액·결제 버튼 표시</div>
+          </div>
+          <label class="tog">
+            <input type="checkbox" id="coinToggle" onchange="toggleCoin(this.checked)">
+            <span class="tog-track"></span>
+          </label>
+        </div>
+      </div>
+      <div id="mgmtList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 확인 모달 -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-icon"  id="modalIcon"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-desc"  id="modalDesc"></div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-cancel"  onclick="closeModal()">취소</button>
+      <button class="modal-btn modal-confirm" id="modalConfirm">확인</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp }                      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, doc,
+           onSnapshot, updateDoc, deleteDoc,
+           writeBatch, query, orderBy }         from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey:            'AIzaSyBSv0AWNRGxhyq97MvI3Kc2S-cM8kXNdj4',
+    authDomain:        'tfp-with-ai.firebaseapp.com',
+    projectId:         'tfp-with-ai',
+    storageBucket:     'tfp-with-ai.firebasestorage.app',
+    messagingSenderId: '667927194187',
+    appId:             '1:667927194187:web:e93bcb20fa80c438e2bbce',
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  // ── 상태 ──
+  let orders     = [];
+  let currentTab = 'wait';
+  const PREVIEW  = 3;
+
+  // ── 카드 HTML ──
+  function itemTag(it) {
+    return `<div class="card-item"><span class="item-dot"></span><span class="item-name">${it.name}</span><span class="item-qty"> ×${it.qty}</span></div>`;
+  }
+
+  function cardHTML(o) {
+    const preview = o.items.slice(0, PREVIEW).map(itemTag).join('');
+    const all     = o.items.map(itemTag).join('');
+    const extra   = o.items.length - PREVIEW;
+
+    const timeStr = o.createdAt?.toDate
+      ? o.createdAt.toDate().toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' })
+      : o.time || '';
+
+    const db = `<span class="dbadge ${o.delivery==='배달'?'delivery':'pickup'}">${o.delivery||'픽업'}</span>`;
+
+    const itemsHTML = `
+      <div class="card-items" onclick="toggleItems(this)">
+        <div class="items-preview">${preview}</div>
+        <div class="items-all">${all}</div>
+      </div>
+      <div class="card-more ${extra>0?'visible':''}" onclick="toggleMore(this)">▾ ${o.items.length}개 전체 보기</div>`;
+
+    const mainBtn = o.status==='wait'
+      ? `<button class="btn-main btn-start"      onclick="advance('${o.id}')">제조 시작 →</button>`
+      : o.status==='make'
+      ? `<button class="btn-main btn-complete"   onclick="advance('${o.id}')">완료 처리 ✓</button>`
+      : `<button class="btn-main btn-done-label" disabled>전달 완료</button>`;
+
+    const backBtn = o.status!=='wait'
+      ? `<button class="btn-back" onclick="goBack('${o.id}')">↩</button>` : '';
+
+    const delBtn = o.status==='done'
+      ? `<button class="btn-del" onclick="confirmDel('${o.id}')">✕</button>` : '';
+
+    return `<div class="order-card" id="card-${o.id}">
+      ${delBtn}
+      <div class="card-head">
+        <div class="card-name">${o.name}</div>
+        <div class="card-sub">${o.place} · ${timeStr} ${db}</div>
+      </div>
+      ${itemsHTML}
+      <div class="card-actions">${mainBtn}${backBtn}</div>
+    </div>`;
+  }
+
+  function toggleItems(el) {
+    el.classList.toggle('expanded');
+    const more = el.nextElementSibling;
+    if (more?.classList.contains('card-more'))
+      more.style.display = el.classList.contains('expanded') ? 'none' : '';
+  }
+  window.toggleItems = toggleItems;
+
+  function toggleMore(el) {
+    const it = el.previousElementSibling;
+    if (it) toggleItems(it);
+  }
+  window.toggleMore = toggleMore;
+
+  // ── 렌더 ──
+  function render() {
+    ['wait','make','done'].forEach(s => {
+      const list = orders.filter(o => o.status === s);
+      document.getElementById('badge-'+s).textContent = list.length;
+      const panel = document.getElementById('panel-'+s);
+      let html = '';
+
+      if (s === 'done') {
+        html += `<div class="done-bar">
+          <span class="done-bar-label">완료 ${list.length}건</span>
+          ${list.length > 0 ? `<button class="btn-clear-all" onclick="confirmClearAll()">전체 삭제</button>` : ''}
+        </div>`;
+      }
+
+      html += list.length === 0
+        ? `<div class="empty-state">
+            <div class="empty-icon">${{wait:'⏳',make:'☕',done:'✅'}[s]}</div>
+            <div class="empty-text">${{wait:'대기 주문 없음',make:'제조 중인 주문 없음',done:'완료 주문 없음'}[s]}</div>
+          </div>`
+        : list.map(cardHTML).join('');
+
+      panel.innerHTML = html;
+    });
+    renderSummary();
+  }
+
+  function renderSummary() {
+    const tally = {};
+    orders.filter(o => o.status==='wait').forEach(o =>
+      o.items.forEach(i => { tally[i.name] = (tally[i.name]||0) + i.qty; })
+    );
+    const entries = Object.entries(tally).sort((a,b) => b[1]-a[1]);
+    const total   = entries.reduce((s,[,q]) => s+q, 0);
+    document.getElementById('summaryTotal').textContent = `합계 ${total}잔`;
+    document.getElementById('summaryChips').innerHTML = entries.length === 0
+      ? `<span style="font-size:12px;color:var(--wait-dark);opacity:0.5">대기 주문 없음</span>`
+      : entries.map(([n,q]) =>
+          `<div class="summary-chip"><span class="chip-name">${n}</span><span class="chip-qty">&nbsp;${q}잔</span></div>`
+        ).join('');
+  }
+
+  // ── 탭 전환 ──
+  function setTab(tab) {
+    currentTab = tab;
+    const map = {wait:'tw', make:'tm', done:'td'};
+    document.querySelectorAll('.tab').forEach(t => { t.className = 'tab'; });
+    document.getElementById('tab-'+tab).classList.add('tab', map[tab]);
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-'+tab).classList.add('active');
+    document.getElementById('summaryBar').classList.toggle('show', tab==='wait');
+  }
+  window.setTab = setTab;
+
+  // ── 주문 상태 변경 (Firestore) ──
+  async function advance(id) {
+    const o = orders.find(x => x.id===id); if (!o) return;
+    const next = o.status==='wait' ? 'make' : o.status==='make' ? 'done' : null;
+    if (!next) return;
+    await updateDoc(doc(db,'orders',id), { status: next });
+    if (next !== currentTab) setTab(next);
+  }
+  window.advance = advance;
+
+  async function goBack(id) {
+    const o = orders.find(x => x.id===id); if (!o) return;
+    const prev = o.status==='make' ? 'wait' : o.status==='done' ? 'make' : null;
+    if (!prev) return;
+    await updateDoc(doc(db,'orders',id), { status: prev });
+    if (prev !== currentTab) setTab(prev);
+  }
+  window.goBack = goBack;
+
+  // ── 모달 ──
+  function showModal(icon, title, desc, onConfirm) {
+    document.getElementById('modalIcon').textContent  = icon;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDesc').innerHTML    = desc;
+    document.getElementById('modalConfirm').onclick   = () => { onConfirm(); closeModal(); };
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+  window.closeModal = closeModal;
+
+  function confirmDel(id) {
+    const o = orders.find(x => x.id===id); if (!o) return;
+    showModal('🗑️', '주문 삭제', `<b>${o.name}</b>님 주문을 삭제할까요?`,
+      async () => { await deleteDoc(doc(db,'orders',id)); }
+    );
+  }
+  window.confirmDel = confirmDel;
+
+  function confirmClearAll() {
+    const doneList = orders.filter(o => o.status==='done');
+    if (!doneList.length) return;
+    showModal('🗑️', '전체 삭제', `완료된 주문 <b>${doneList.length}건</b>을 모두 삭제할까요?`,
+      async () => {
+        const batch = writeBatch(db);
+        doneList.forEach(o => batch.delete(doc(db,'orders',o.id)));
+        await batch.commit();
+      }
+    );
+  }
+  window.confirmClearAll = confirmClearAll;
+
+  // ── 메뉴 관리 ──
+  const allMenus = [
+    { cat:'커피',   items:[{id:'coffee-1',name:'아메리카노 (HOT/ICE)'},{id:'coffee-2',name:'아포가토'}] },
+    { cat:'에이드', items:[{id:'ade-1',name:'청포도 에이드'},{id:'ade-2',name:'자몽 에이드'}] },
+    { cat:'스무디', items:[{id:'smo-1',name:'딸기 스무디'},{id:'smo-2',name:'키위 스무디'},{id:'smo-3',name:'베리믹스 스무디'}] },
+    { cat:'차',     items:[{id:'tea-1',name:'다즐링'},{id:'tea-2',name:'얼그레이'},{id:'tea-3',name:'허브티'},{id:'tea-4',name:'국화차'}] },
+    { cat:'기타',   items:[{id:'etc-1',name:'팥빙수 (7월 한정)'}] },
+  ];
+
+  function renderMgmt() {
+    document.getElementById('mgmtList').innerHTML = allMenus.map(c => `
+      <div class="mgmt-cat">${c.cat}</div>
+      ${c.items.map(m => `
+        <div class="mgmt-row">
+          <span class="mgmt-name" id="mgmt-${m.id}">${m.name}</span>
+          <label class="tog">
+            <input type="checkbox" checked id="tog-${m.id}"
+              onchange="toggleMenu('${m.id}', this.checked)">
+            <span class="tog-track"></span>
+          </label>
+        </div>`).join('')}
+    `).join('');
+  }
+
+  // 메뉴·설정 실시간 감시
+  function watchMenuSettings() {
+    onSnapshot(collection(db, 'menus'), snap => {
+      snap.docs.forEach(d => {
+        const data = d.data();
+        const nameEl = document.getElementById('mgmt-' + d.id);
+        const cb     = document.getElementById('tog-' + d.id);
+        if (nameEl) nameEl.classList.toggle('off', !data.visible);
+        if (cb) cb.checked = data.visible;
+      });
+    });
+
+    onSnapshot(doc(db, 'settings', 'admin'), snap => {
+      if (!snap.exists()) return;
+      const cb = document.getElementById('coinToggle');
+      if (cb) cb.checked = snap.data().coinEnabled;
+    });
+  }
+
+  async function toggleMenu(id, visible) {
+    await updateDoc(doc(db,'menus',id), { visible });
+  }
+  window.toggleMenu = toggleMenu;
+
+  async function toggleCoin(enabled) {
+    await updateDoc(doc(db,'settings','admin'), { coinEnabled: enabled });
+  }
+  window.toggleCoin = toggleCoin;
+
+  function openMgmt()  { document.getElementById('mgmtOverlay').classList.add('show'); }
+  function closeMgmt() { document.getElementById('mgmtOverlay').classList.remove('show'); }
+  function bgClose(e)  { if (e.target===document.getElementById('mgmtOverlay')) closeMgmt(); }
+  window.openMgmt  = openMgmt;
+  window.closeMgmt = closeMgmt;
+  window.bgClose   = bgClose;
+
+  // ── 주문 실시간 감시 ──
+  function watchOrders() {
+    const q = query(collection(db,'orders'), orderBy('createdAt','asc'));
+    onSnapshot(q, snap => {
+      orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      render();
+    });
+  }
+
+  // ── 시계 ──
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clockEl').textContent =
+      String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  }
+
+  // ── 초기화 ──
+  renderMgmt();
+  watchMenuSettings();
+  watchOrders();
+  updateClock();
+  setInterval(updateClock, 10000);
+</script>
+</body>
+</html>
