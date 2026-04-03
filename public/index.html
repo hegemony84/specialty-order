@@ -1215,7 +1215,18 @@
         if (el) { el.textContent=0; el.className='qty-num'; }
       });
     });
-    document.getElementById('inputName').value  = '';
+
+    // 로그인 사용자면 이름 유지, 비로그인이면 초기화
+    const nameInput = document.getElementById('inputName');
+    if (currentUser) {
+      nameInput.value    = currentUser.name;
+      nameInput.disabled = true;
+    } else {
+      nameInput.value    = '';
+      nameInput.disabled = false;
+    }
+
+    // 픽업이면 장소 초기화, 배달이면 유지
     document.getElementById('inputPlace').value = '';
     updateSummary(); updateBtn();
     window.scrollTo({ top:0, behavior:'smooth' });
