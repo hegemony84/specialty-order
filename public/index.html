@@ -1226,7 +1226,9 @@
       nameInput.disabled = false;
     }
 
-    // 픽업이면 장소 초기화, 배달이면 유지
+    // 픽업/배달 상태 초기화 (픽업으로 되돌리기)
+    setPickup('pickup');
+
     document.getElementById('inputPlace').value = '';
     updateSummary(); updateBtn();
     window.scrollTo({ top:0, behavior:'smooth' });
