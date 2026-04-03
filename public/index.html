@@ -32,7 +32,7 @@
     font-family: 'Noto Sans KR', sans-serif;
     color: var(--text);
     min-height: 100dvh;
-    padding-bottom: 110px;
+    padding-bottom: 160px;
   }
 
   /* ── 헤더 ── */
@@ -783,12 +783,14 @@
 
   <div class="form-group">
     <div class="form-label"><span class="form-label-dot"></span>이름</div>
-    <input class="form-input" id="inputName" type="text" placeholder="예) 김철수" maxlength="10" oninput="updateBtn()">
+    <input class="form-input" id="inputName" type="text" placeholder="예) 김철수" maxlength="10" oninput="updateBtn()"
+      onfocus="scrollToInput(this)">
   </div>
 
   <div class="form-group" id="placeGroup">
     <div class="form-label"><span class="form-label-dot"></span>장소 <span id="placeHint" style="font-size:11px;font-weight:300;color:var(--text-sub);margin-left:4px;">(픽업은 카페 방문)</span></div>
-    <input class="form-input" id="inputPlace" type="text" placeholder="예) 3학년 2반" maxlength="20" oninput="updateBtn()" disabled>
+    <input class="form-input" id="inputPlace" type="text" placeholder="예) 3학년 2반" maxlength="20" oninput="updateBtn()" disabled
+      onfocus="scrollToInput(this)">
   </div>
 
 </div>
@@ -1348,7 +1350,18 @@
   }
   window.payCoin = payCoin;
 
-  // ── 탭 & 스크롤 ──
+  // 입력란 포커스 시 주문 버튼에 가리지 않도록 스크롤
+  function scrollToInput(el) {
+    setTimeout(() => {
+      const rect    = el.getBoundingClientRect();
+      const btnH    = 80; // 하단 버튼 높이
+      const visible = window.innerHeight - btnH;
+      if (rect.bottom > visible) {
+        window.scrollBy({ top: rect.bottom - visible + 16, behavior: 'smooth' });
+      }
+    }, 300); // 키보드 올라오는 시간 대기
+  }
+  window.scrollToInput = scrollToInput;
   function setActiveTab(id) {
     document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
     const map = { coffee:0, ade:1, smoothie:2, tea:3, etc:4 };
