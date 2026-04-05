@@ -1369,19 +1369,32 @@
     if (idx !== undefined) document.querySelectorAll('.cat-tab')[idx]?.classList.add('active');
   }
 
+  let isTabScrolling = false;  // 탭 클릭으로 스크롤 중 여부
+  let tabScrollTimer = null;
+
   function scrollToSection(id) {
     const el = document.getElementById(id);
     if (!el) return;
     const headerH = document.querySelector('header').offsetHeight;
     const top = el.getBoundingClientRect().top + window.scrollY - headerH - 8;
+
+    // 탭 클릭 스크롤 중 플래그 ON
+    isTabScrolling = true;
+    clearTimeout(tabScrollTimer);
+
     window.scrollTo({ top, behavior:'smooth' });
     setActiveTab(id);
+
+    // 스크롤 완료 예상 시간 후 플래그 OFF
+    tabScrollTimer = setTimeout(() => { isTabScrolling = false; }, 800);
   }
   window.scrollToSection = scrollToSection;
 
   const sectionIds = ['coffee','ade','smoothie','tea','etc'];
   let scrollTimer = null;
   window.addEventListener('scroll', () => {
+    // 탭 클릭으로 스크롤 중이면 감지 무시
+    if (isTabScrolling) return;
     if (scrollTimer) return;
     scrollTimer = setTimeout(() => {
       scrollTimer = null;
