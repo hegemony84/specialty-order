@@ -137,7 +137,7 @@
     max-height: 0; overflow: hidden;
     transition: max-height 0.3s ease; flex-shrink: 0;
   }
-  .summary-bar.show { max-height: 120px; }
+  .summary-bar.show { max-height: 160px; overflow-y: auto; }
 
   .summary-bar-inner { padding: 10px 16px 12px; }
   .summary-bar-head {
@@ -157,7 +157,7 @@
   .chip-qty  { font-weight: 700; color: var(--wait-dark); }
 
   /* ── 패널 ── */
-  .panels { flex: 1; overflow: hidden; }
+  .panels { flex: 1; overflow: hidden; min-height: 0; }
 
   .panel {
     display: none; height: 100%;

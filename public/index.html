@@ -1034,16 +1034,11 @@
     if (!q || !m) return;
 
     if (key === 'topping') {
-      const base = m.type === 'hot-ice' ? (q.hot + q.ice) : q.single;
-      q.topping = Math.max(0, Math.min(base, q.topping + delta));
+      // 토핑은 기본 수량 이하로만 가능 (제한 없이 자유롭게)
+      q.topping = Math.max(0, Math.min(9, q.topping + delta));
     } else {
       q[key] = Math.max(0, Math.min(9, (q[key] || 0) + delta));
-      if (m.topping) {
-        const base = m.type === 'hot-ice' ? (q.hot + q.ice) : q.single;
-        q.topping = Math.min(q.topping, base);
-        const tEl = document.getElementById('q-' + id + '-topping');
-        if (tEl) tEl.textContent = q.topping;
-      }
+      // 토핑 수량 제한 제거 — 스무디와 토핑은 독립적으로 주문 가능
     }
 
     const el = document.getElementById('q-' + id + '-' + key);
@@ -1087,8 +1082,10 @@
       } else {
         if (q.single > 0) {
           rows.push({ name: m.name, qty: q.single, price: m.price * q.single });
-          if (m.topping && q.topping > 0)
-            rows.push({ name:'+ '+m.topping.name, qty: q.topping, price: m.topping.price * q.topping });
+        }
+        // 토핑은 스무디 수량과 무관하게 독립적으로 주문 가능
+        if (m.topping && q.topping > 0) {
+          rows.push({ name:'+ '+m.topping.name, qty: q.topping, price: m.topping.price * q.topping });
         }
       }
     });
