@@ -13,7 +13,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
-const BASE = 'https://raw.githubusercontent.com/hegemony84/specialty-order/main/public/images';
+const BASE = 'https://specialty-order.onrender.com/images';
 
 const imgUrls = [
   { id:'americano',          file:'americano.png' },
