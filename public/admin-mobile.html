@@ -651,14 +651,22 @@
   // ── 메뉴 관리 ──
   const allMenus = [
     { cat:'커피',   items:[
-      {id:'coffee-1',name:'아메리카노 (HOT/ICE)'},
-      {id:'coffee-2',name:'아포카토'},
-      {id:'coffee-3',name:'디카페인 아메리카노 (HOT/ICE)'},
+      { id:'americano',      name:'아메리카노 (HOT/ICE)' },
+      { id:'decaf',          name:'디카페인 아메리카노 (HOT/ICE)' },
+      { id:'affogato',       name:'아포카토' },
+      { id:'caffe-latte',    name:'카페라떼 (HOT/ICE)' },
     ]},
-    { cat:'에이드', items:[{id:'ade-1',name:'청포도 에이드'},{id:'ade-2',name:'자몽 에이드'}] },
-    { cat:'스무디', items:[{id:'smo-1',name:'딸기 스무디'},{id:'smo-2',name:'키위 스무디'},{id:'smo-3',name:'베리믹스 스무디'}] },
-    { cat:'차',     items:[{id:'tea-3',name:'허브티'}] },
-    { cat:'기타',   items:[{id:'etc-1',name:'팥빙수 (7월 한정)'}] },
+    { cat:'에이드', items:[
+      { id:'grape-ade',      name:'청포도 에이드' },
+      { id:'grapefruit-ade', name:'자몽 에이드' },
+    ]},
+    { cat:'스무디', items:[
+      { id:'strawberry-smoothie', name:'딸기 스무디' },
+      { id:'kiwi-smoothie',       name:'키위 스무디' },
+      { id:'berry-smoothie',      name:'베리믹스 스무디' },
+    ]},
+    { cat:'차',   items:[{ id:'herbtea', name:'허브티' }] },
+    { cat:'기타', items:[{ id:'patbingsu', name:'팥빙수 (7월 한정)' }] },
   ];
 
   function renderMgmt() {
