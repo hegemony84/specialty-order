@@ -409,15 +409,14 @@
 
   .card-who-inline {
     display: flex;
-    align-items: baseline;
-    justify-content: center;
-    gap: 6px;
+    flex-direction: column;
+    gap: 3px;
     flex: 1;
     min-width: 0;
   }
 
   .card-name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--text);
     white-space: nowrap;
@@ -426,10 +425,12 @@
   }
 
   .card-place {
-    font-size: 11px;
-    color: var(--text-sub);
-    font-weight: 300;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--make-label);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .card-meta {

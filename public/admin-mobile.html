@@ -210,10 +210,15 @@
   .panel-done .order-card { opacity: 0.72; }
 
   .card-head { margin-bottom: 10px; }
-  .card-name { font-size: 19px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .card-name { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .card-place-large {
+    font-size: 17px; font-weight: 700;
+    color: var(--make-color);
+    margin-top: 2px; line-height: 1.2;
+  }
   .card-sub  {
     font-size: 12px; color: var(--text-sub);
-    font-weight: 300; margin-top: 3px;
+    font-weight: 300; margin-top: 4px;
     display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
   }
 
@@ -522,7 +527,8 @@
       ${delBtn}
       <div class="card-head">
         <div class="card-name">${o.name}</div>
-        <div class="card-sub">${o.place} · ${timeStr} ${db}</div>
+        <div class="card-place-large">${o.place}</div>
+        <div class="card-sub">${timeStr} ${db}</div>
       </div>
       ${itemsHTML}
       <div class="card-actions">${mainBtn}${backBtn}</div>
