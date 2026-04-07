@@ -722,9 +722,13 @@
 
   // ── 주문 실시간 감시 ──
   function watchOrders() {
-    const q = query(collection(db,'orders'), orderBy('createdAt','asc'));
-    onSnapshot(q, snap => {
+    onSnapshot(collection(db,'orders'), snap => {
       orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      orders.sort((a, b) => {
+        const at = a.createdAt?.toMillis?.() || 0;
+        const bt = b.createdAt?.toMillis?.() || 0;
+        return at - bt;
+      });
       render();
     });
   }
