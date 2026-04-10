@@ -21,6 +21,11 @@ app.get('/admin/mobile', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin-mobile.html'));
 });
 
+// 통계 페이지
+app.get('/stats', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'stats.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`서버 실행 중: http://localhost:${PORT}`);
 });
